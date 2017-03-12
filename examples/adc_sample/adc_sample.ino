@@ -13,7 +13,7 @@
 #define ADC_CLK     1600000  // SPI clock 1.6MHz
 
 
-Mcp3208 adc(ADC_VREF, SPI_CS);
+MCP3208 adc(ADC_VREF, SPI_CS);
 
 void setup() {
 

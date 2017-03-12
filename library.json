@@ -1,7 +1,7 @@
 {
   "name": "Mcp3208",
   "keywords": "adc, serial, spi",
-  "description": "A Arduino library for the MCP3208 adc. The library support all features of the chip and uses SPI for communication.",
+  "description": "A Arduino library for the MCP3208/3204 adc. The library support all features of the chip and uses SPI for communication.",
   "repository": {
     "type": "git",
     "url": "https://github.com/labfruits/mcp3208.git"

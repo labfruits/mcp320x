@@ -1,0 +1,32 @@
+#######################################
+# Syntax Coloring Map For Mcp3208
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MCP3208       KEYWORD1
+Channel       KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+read          KEYWORD2
+testSplSpeed  KEYWORD2
+toAnalog      KEYWORD2
+toDigital     KEYWORD2
+getVref       KEYWORD2
+getAnalogRes  KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+kResBits      LITERAL1
+kRes          LITERAL1

@@ -11,6 +11,10 @@ When used with the 4 channel version the available channels are limited to
 the first 4 single channels (SINGLE_0-4) and the first 2 differential
 channels (DIFF_0/1).
 
+## Documentation
+
+The documentation is available [here](https://labfruits.github.io/mcp3208/docs/html/).
+
 ## License
 
 This code is released under the MIT License.

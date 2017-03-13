@@ -4,7 +4,6 @@
  */
 #include "Mcp3208.h"
 
-
 MCP3208::MCP3208(uint16_t vref, uint8_t csPin, SPIClass *spi) {
 
   // set member vars

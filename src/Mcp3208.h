@@ -1,7 +1,10 @@
 /**
  * @file Mcp3208.h
- * @author  Patrick Rogalla <patrick@labfruits.com>
+ * @author Patrick Rogalla <patrick@labfruits.com>
  *
+ * Interface for the Microchip MSP3208/3204 12 bit ADC.
+ * The class is implemented for the 8 channel version. But the 4 channel
+ * version is fully supported and only limmeted by the number of channles.
  */
 #ifndef MCP3208_H_
 #define MCP3208_H_
@@ -26,9 +29,9 @@ public:
    *
    * bits|  4  | 3 | 2 | 1
    * :--:|:---:|:-:|:-:|:-:
-   *     |type |ch |ch |ch
+   *  -  |type |ch |ch |ch
    *
-   *     |      description
+   *  -  |      description
    * :--:|:--------------------------
    * type| 1 bit for single(1) or differential(0) input
    * ch  | 3 bit for channel number selection

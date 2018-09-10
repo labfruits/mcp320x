@@ -86,9 +86,9 @@ public:
    * and put in a usable state before calling this function.
    * @param [in] ch the channel to use for the speed test.
    * @param [in] num the number of reads to perform.
-   * @return the average sampling time needed for one read in us.
+   * @return the average sampling time needed for one sample in ns.
    */
-  uint16_t testSplSpeed(Channel ch, uint16_t num);
+  uint32_t testSplSpeed(Channel ch, uint16_t num);
 
   /**
    * Converts the supplied raw value to an analog value in mV based on

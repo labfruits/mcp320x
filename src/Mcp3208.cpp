@@ -46,7 +46,7 @@ uint16_t MCP3208::read(Channel ch) {
   return data.value;
 }
 
-uint16_t MCP3208::testSplSpeed(Channel ch, uint16_t num) {
+uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num) {
 
   // start time
   uint32_t t1 = micros();
@@ -56,7 +56,7 @@ uint16_t MCP3208::testSplSpeed(Channel ch, uint16_t num) {
   uint32_t t2 = micros();
 
   // return average sampling speed rounded to next integer
-  return ((t2 - t1) + (num / 2)) / num;
+  return ((t2 - t1) * 1000 + (num / 2)) / num;
 }
 
 uint16_t MCP3208::toAnalog(uint16_t raw) {

@@ -82,6 +82,28 @@ public:
   uint16_t read(Channel ch);
 
   /**
+   * Reads the supplied channel and stores the data in the supplied
+   * data array. The SPI interface must be initialized and put in a
+   * usable state before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   * @return the converted raw value.
+   */
+  template <typename T>
+  void read(Channel ch, T *data, uint16_t num);
+
+  /**
+   * Performs a sampling speed test over 64 reads. The SPI interface
+   * must be initialized and put in a usable state before
+   * calling this function.
+   * @param [in] ch the channel to use for the speed test.
+   * @return the average sampling time needed for one sample in ns.
+   */
+  uint32_t testSplSpeed(Channel ch);
+
+  /**
    * Performs a sampling speed test. The SPI interface must be initialized
    * and put in a usable state before calling this function.
    * @param [in] ch the channel to use for the speed test.
@@ -126,16 +148,30 @@ private:
   SPIClass *mSpi;
 
   /**
-   * Defines 16 bit data. The structure implements an easy
+   * Defines 16 bit SPI data. The structure implements an easy
    * access to each byte.
    */
-  union AdcData {
+  union SpiData {
     uint16_t value;  /**< value */
     struct {
       uint8_t loByte;  /**< low byte */
       uint8_t hiByte;  /**< high byte */
     };
   };
+
+  /**
+   * Creates command data from the supplied channel.
+   * @param [in] ch the channel to create the command for.
+   * @return the SPI data.
+   */
+  SpiData createCmd(Channel ch);
+
+  /**
+   * Transfers the supplied SPI data command.
+   * @param [in] cmd the SPI data command to transfer.
+   * @return the ADC value from the SPI response.
+   */
+  uint16_t transfer(SpiData cmd);
 };
 
 #endif // MCP3208_H_

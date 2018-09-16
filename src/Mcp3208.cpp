@@ -4,46 +4,33 @@
  */
 #include "Mcp3208.h"
 
-MCP3208::MCP3208(uint16_t vref, uint8_t csPin, SPIClass *spi) {
+MCP3208::MCP3208(uint16_t vref, uint8_t csPin, SPIClass *spi) :
+    mVref(vref),
+    mCsPin(csPin),
+    mSpi(spi) {}
 
-  // set member vars
-  mVref = vref;
-  mCsPin = csPin;
-  mSpi = spi;
-}
-
-MCP3208::MCP3208(uint16_t vref, uint8_t csPin) {
-
-  // set member vars with default SPI interface
-  mVref = vref;
-  mCsPin = csPin;
-  mSpi = &SPI;
-}
+MCP3208::MCP3208(uint16_t vref, uint8_t csPin) :
+    MCP3208(vref, csPin, &SPI) {}
 
 uint16_t MCP3208::read(Channel ch) {
+  // transfer spi data
+  return transfer(createCmd(ch));
+}
 
-  AdcData data;
-  // base command structure
-  // 0b000001cccc000000
-  // c: channel config
+template <typename T>
+void MCP3208::read(Channel ch, T *data, uint16_t num) {
 
-  // add channel to basic command structure
-  data.value = 0x0400 | (ch << 6);
+  SpiData cmd;
 
-  // activate ADC with chip select
-  digitalWrite(mCsPin, LOW);
+  // create command data
+  cmd = createCmd(ch);
+  // transfer spi data
+  for (uint16_t i=0; i < num; i++)
+    data[i] = static_cast<T>(transfer(cmd));
+}
 
-  // send first command byte
-  mSpi->transfer(data.hiByte);
-  // send second command byte and receive first(msb) 4 bits
-  data.hiByte = mSpi->transfer(data.loByte) & 0x0F;
-  // receive last(lsb) 8 bits
-  data.loByte = mSpi->transfer(0x00);
-
-  // deactivate ADC with slave select
-  digitalWrite(mCsPin, HIGH);
-
-  return data.value;
+uint32_t MCP3208::testSplSpeed(Channel ch) {
+  return testSplSpeed(ch, 64);
 }
 
 uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num) {
@@ -74,3 +61,48 @@ uint16_t MCP3208::getVref() {
 uint16_t MCP3208::getAnalogRes() {
   return (static_cast<uint32_t>(mVref) * 1000) / kRes;
 }
+
+MCP3208::SpiData MCP3208::createCmd(Channel ch) {
+  // base command structure
+  // 0b000001cccc000000
+  // c: channel config
+  return {
+    // add channel to basic command structure
+    .value = static_cast<uint16_t>((0x0400 | (ch << 6)))
+  };
+}
+
+uint16_t MCP3208::transfer(SpiData cmd) {
+
+  SpiData adc;
+
+  // activate ADC with chip select
+  digitalWrite(mCsPin, LOW);
+
+  // send first command byte
+  mSpi->transfer(cmd.hiByte);
+  // send second command byte and receive first(msb) 4 bits
+  adc.hiByte = mSpi->transfer(cmd.loByte) & 0x0F;
+  // receive last(lsb) 8 bits
+  adc.loByte = mSpi->transfer(0x00);
+
+  // deactivate ADC with slave select
+  digitalWrite(mCsPin, HIGH);
+
+  return adc.value;
+}
+
+/*
+ * Explicit template instantiation for the supported data array types.
+ */
+template
+void MCP3208::read<uint16_t>(Channel ch, uint16_t *data, uint16_t num);
+
+template
+void MCP3208::read<uint32_t>(Channel ch, uint32_t *data, uint16_t num);
+
+template
+void MCP3208::read<float>(Channel ch, float *data, uint16_t num);
+
+template
+void MCP3208::read<double>(Channel ch, double *data, uint16_t num);

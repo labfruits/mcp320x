@@ -1,8 +1,7 @@
 /**
- * Basic ADC reading example.
+ * Read ADC data to buffer.
  * - connects to ADC
- * - reads value from channel
- * - converts value to analog voltage
+ * - reads multiple values from channel
  */
 
 #include <SPI.h>
@@ -11,7 +10,9 @@
 #define SPI_CS    	2 		   // SPI slave select
 #define ADC_VREF    3300     // 3.3V Vref
 #define ADC_CLK     1600000  // SPI clock 1.6MHz
+#define SPLS        128      // samples
 
+uint32_t data[SPLS] = {0};
 
 MCP3208 adc(ADC_VREF, SPI_CS);
 
@@ -41,20 +42,12 @@ void loop() {
   Serial.println("Reading...");
 
   t1 = micros();
-  uint16_t raw = adc.read(MCP3208::SINGLE_0);
+  adc.read(MCP3208::SINGLE_0, data, SPLS);
   t2 = micros();
 
-  // get analog value
-  uint16_t val = adc.toAnalog(raw);
-
-  // readed value
-  Serial.print("value: ");
-  Serial.print(raw);
-  Serial.print(" (");
-  Serial.print(val);
-  Serial.println(" mV)");
-
   // sampling time
+  Serial.print("Samples: ");
+  Serial.println(SPLS);
   Serial.print("Sampling time: ");
   Serial.print(static_cast<double>(t2 - t1) / 1000, 4);
   Serial.println("ms");

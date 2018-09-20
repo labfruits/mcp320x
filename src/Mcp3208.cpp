@@ -4,13 +4,22 @@
  */
 #include "Mcp3208.h"
 
+// divide n by d and round to next integer
+#define div_round(n,d) (((n) + ((d) >> 2)) / (d))
+
+
 MCP3208::MCP3208(uint16_t vref, uint8_t csPin, SPIClass *spi) :
     mVref(vref),
     mCsPin(csPin),
+    mSplSpeed(0),
     mSpi(spi) {}
 
 MCP3208::MCP3208(uint16_t vref, uint8_t csPin) :
     MCP3208(vref, csPin, &SPI) {}
+
+void MCP3208::calibrate(Channel ch) {
+  mSplSpeed = testSplSpeed(ch, 256);
+}
 
 uint16_t MCP3208::read(Channel ch) {
   // transfer spi data
@@ -19,14 +28,26 @@ uint16_t MCP3208::read(Channel ch) {
 
 template <typename T>
 void MCP3208::read(Channel ch, T *data, uint16_t num) {
-
-  SpiData cmd;
-
   // create command data
-  cmd = createCmd(ch);
+  SpiData cmd = createCmd(ch);
+
   // transfer spi data
   for (uint16_t i=0; i < num; i++)
     data[i] = static_cast<T>(transfer(cmd));
+}
+
+template <typename T>
+void MCP3208::read(Channel ch, T *data, uint16_t num, uint32_t splFreq) {
+  // create command data
+  SpiData cmd = createCmd(ch);
+  // required delay
+  uint16_t delay = getSplDelay(ch, splFreq);
+
+  // transfer spi data
+  for (uint16_t i=0; i < num; i++) {
+    data[i] = static_cast<T>(transfer(cmd));
+    delayMicroseconds(delay);
+  }
 }
 
 uint32_t MCP3208::testSplSpeed(Channel ch) {
@@ -34,7 +55,6 @@ uint32_t MCP3208::testSplSpeed(Channel ch) {
 }
 
 uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num) {
-
   // start time
   uint32_t t1 = micros();
   // perform sampling
@@ -42,8 +62,26 @@ uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num) {
   // stop time
   uint32_t t2 = micros();
 
-  // return average sampling speed rounded to next integer
-  return ((t2 - t1) * 1000 + (num / 2)) / num;
+  // return average sampling speed
+  return div_round((t2 - t1) * 1000, num);
+}
+
+uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num, uint32_t splFreq) {
+  // required delay
+  uint16_t delay = getSplDelay(ch, splFreq);
+
+  // start time
+  uint32_t t1 = micros();
+  // perform sampling
+  for (uint16_t i = 0; i < num; i++) {
+    read(ch);
+    delayMicroseconds(delay);
+  }
+  // stop time
+  uint32_t t2 = micros();
+
+  // return average sampling speed
+  return div_round((t2 - t1) * 1000, num);
 }
 
 uint16_t MCP3208::toAnalog(uint16_t raw) {
@@ -72,6 +110,18 @@ MCP3208::SpiData MCP3208::createCmd(Channel ch) {
   };
 }
 
+uint16_t MCP3208::getSplDelay(Channel ch, uint32_t splFreq) {
+  // requested sampling period (ns)
+  uint32_t splTime = div_round(1000000000, splFreq);
+
+  // measure speed if uncalibrated
+  if (!mSplSpeed) calibrate(ch);
+
+  // calculate delay in us
+  int16_t delay =  (splTime - mSplSpeed) / 1000;
+  return (delay < 0) ? 0 : static_cast<uint16_t>(delay);
+}
+
 uint16_t MCP3208::transfer(SpiData cmd) {
 
   SpiData adc;
@@ -95,14 +145,12 @@ uint16_t MCP3208::transfer(SpiData cmd) {
 /*
  * Explicit template instantiation for the supported data array types.
  */
-template
-void MCP3208::read<uint16_t>(Channel ch, uint16_t *data, uint16_t num);
+template void MCP3208::read<uint16_t>(Channel, uint16_t*, uint16_t);
+template void MCP3208::read<uint32_t>(Channel, uint32_t*, uint16_t);
+template void MCP3208::read<float>(Channel, float*, uint16_t);
+template void MCP3208::read<double>(Channel, double*, uint16_t);
 
-template
-void MCP3208::read<uint32_t>(Channel ch, uint32_t *data, uint16_t num);
-
-template
-void MCP3208::read<float>(Channel ch, float *data, uint16_t num);
-
-template
-void MCP3208::read<double>(Channel ch, double *data, uint16_t num);
+template void MCP3208::read<uint16_t>(Channel, uint16_t*, uint16_t, uint32_t);
+template void MCP3208::read<uint32_t>(Channel, uint32_t*, uint16_t, uint32_t);
+template void MCP3208::read<float>(Channel, float*, uint16_t, uint32_t);
+template void MCP3208::read<double>(Channel, double*, uint16_t, uint32_t);

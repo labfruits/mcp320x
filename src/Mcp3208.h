@@ -3,7 +3,7 @@
  * @author Patrick Rogalla <patrick@labfruits.com>
  *
  * Interface for the Microchip MSP3208/3204 12 bit ADC.
- * The class is implemented for the 8 channel version. But the 4 channel
+ * The class is implemented for the 8 channel version, but the 4 channel
  * version is fully supported and only limmeted by the number of channles.
  */
 #ifndef MCP3208_H_
@@ -74,6 +74,15 @@ public:
   MCP3208(uint16_t vref, uint8_t csPin);
 
   /**
+   * Calibrates read timing using the supplied channel. A calibration
+   * should be performed after evey SPI frequency changes or other events
+   * that could have an impact on the sampling speed.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   */
+  void calibrate(Channel ch);
+
+  /**
    * Reads the supplied channel. The SPI interface must be initialized and
    * put in a usable state before calling this function.
    * @param [in] ch defines the channel to read from.
@@ -89,10 +98,24 @@ public:
    * @param [out] data array to store the values.
    * @param [in] num number of reads. The data array needs to be
    * at least that size.
-   * @return the converted raw value.
    */
   template <typename T>
   void read(Channel ch, T *data, uint16_t num);
+
+  /**
+   * Reads the supplied channel limited to the specified frequency and
+   * stores the data in the supplied data array. The sample rate limit
+   * is software controlled, and has a low precision.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   * @param [in] splFreq sample frequency limit in hz.
+   */
+  template <typename T>
+  void read(Channel ch, T *data, uint16_t num, uint32_t splFreq);
 
   /**
    * Performs a sampling speed test over 64 reads. The SPI interface
@@ -111,6 +134,17 @@ public:
    * @return the average sampling time needed for one sample in ns.
    */
   uint32_t testSplSpeed(Channel ch, uint16_t num);
+
+  /**
+   * Performs a sampling speed test limited to the specified frequency.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   * @param [in] ch the channel to use for the speed test.
+   * @param [in] num the number of reads to perform.
+   * @param [in] splFreq sample frequency limit in hz.
+   * @return the average sampling time needed for one sample in ns.
+   */
+  uint32_t testSplSpeed(Channel ch, uint16_t num, uint32_t splFreq);
 
   /**
    * Converts the supplied raw value to an analog value in mV based on
@@ -145,6 +179,7 @@ private:
 
   uint16_t mVref;
   uint8_t mCsPin;
+  uint32_t mSplSpeed;
   SPIClass *mSpi;
 
   /**
@@ -164,7 +199,14 @@ private:
    * @param [in] ch the channel to create the command for.
    * @return the SPI data.
    */
-  SpiData createCmd(Channel ch);
+  static SpiData createCmd(Channel ch);
+
+  /**
+   * Returns the required delay for the requested sample rate.
+   * @param [in] ch the channel to create the command for.
+   * @return the delay in us.
+   */
+  uint16_t getSplDelay(Channel ch, uint32_t splFreq);
 
   /**
    * Transfers the supplied SPI data command.

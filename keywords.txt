@@ -13,6 +13,7 @@ Channel	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+calibrate	KEYWORD2
 read	KEYWORD2
 testSplSpeed	KEYWORD2
 toAnalog	KEYWORD2

@@ -88,7 +88,7 @@ public:
    * @param [in] ch defines the channel to read from.
    * @return the converted raw value.
    */
-  uint16_t read(Channel ch);
+  uint16_t read(Channel ch) const;
 
   /**
    * Reads the supplied channel and stores the data in the supplied
@@ -100,7 +100,7 @@ public:
    * at least that size.
    */
   template <typename T>
-  void read(Channel ch, T *data, uint16_t num);
+  void read(Channel ch, T *data, uint16_t num) const;
 
   /**
    * Reads the supplied channel limited to the specified frequency and
@@ -124,7 +124,7 @@ public:
    * @param [in] ch the channel to use for the speed test.
    * @return the average sampling time needed for one sample in ns.
    */
-  uint32_t testSplSpeed(Channel ch);
+  uint32_t testSplSpeed(Channel ch) const;
 
   /**
    * Performs a sampling speed test. The SPI interface must be initialized
@@ -133,7 +133,7 @@ public:
    * @param [in] num the number of reads to perform.
    * @return the average sampling time needed for one sample in ns.
    */
-  uint32_t testSplSpeed(Channel ch, uint16_t num);
+  uint32_t testSplSpeed(Channel ch, uint16_t num) const;
 
   /**
    * Performs a sampling speed test limited to the specified frequency.
@@ -152,7 +152,7 @@ public:
    * @param [in] raw the sampled ADC value.
    * @return the converted analog value in mV.
    */
-  uint16_t toAnalog(uint16_t raw);
+  uint16_t toAnalog(uint16_t raw) const;
 
   /**
    * Converts the supplied analog value to the digital representation
@@ -160,20 +160,20 @@ public:
    * @param [in] val the analog value in mV.
    * @return the digital representation off the supplied analog value.
    */
-  uint16_t toDigital(uint16_t val);
+  uint16_t toDigital(uint16_t val) const;
 
   /**
    * Returns the reference voltage.
    * @return the configured reference voltage in mV.
    */
-  uint16_t getVref();
+  uint16_t getVref() const;
 
   /**
    * Returns the analog resolution in µV based on the defined
    * reference voltage.
    * @return the analog resolution in µV.
    */
-  uint16_t getAnalogRes();
+  uint16_t getAnalogRes() const;
 
 private:
 
@@ -213,7 +213,7 @@ private:
    * @param [in] cmd the SPI data command to transfer.
    * @return the ADC value from the SPI response.
    */
-  uint16_t transfer(SpiData cmd);
+  uint16_t transfer(SpiData cmd) const;
 };
 
 #endif // MCP3208_H_

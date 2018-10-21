@@ -96,15 +96,44 @@ public:
    * usable state before calling this function.
    * @param [in] ch defines the channel to read from.
    * @param [out] data array to store the values.
-   * @param [in] num number of reads. The data array needs to be
-   * at least that size.
    */
-  template <typename T>
-  void read(Channel ch, T *data, uint16_t num) const;
+  template <typename T, size_t N>
+  void read(Channel ch, T (&data)[N])
+  {
+    return readn(ch, data, N);
+  }
 
   /**
    * Reads the supplied channel limited to the specified frequency and
    * stores the data in the supplied data array. The sample rate limit
+   * is software controlled, and has a low precision.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] splFreq sample frequency limit in hz.
+   */
+  template <typename T, size_t N>
+  void read(Channel ch, T (&data)[N], uint32_t splFreq)
+  {
+    return readn(ch, data, N, splFreq);
+  }
+
+  /**
+   * Reads the supplied channel and stores N values in the supplied
+   * data array. The SPI interface must be initialized and put in a
+   * usable state before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   */
+  template <typename T>
+  void readn(Channel ch, T *data, uint16_t num) const;
+
+  /**
+   * Reads the supplied channel limited to the specified frequency and
+   * stores N values in the supplied data array. The sample rate limit
    * is software controlled, and has a low precision.
    * The SPI interface must be initialized and put in a usable state
    * before calling this function.
@@ -115,7 +144,7 @@ public:
    * @param [in] splFreq sample frequency limit in hz.
    */
   template <typename T>
-  void read(Channel ch, T *data, uint16_t num, uint32_t splFreq);
+  void readn(Channel ch, T *data, uint16_t num, uint32_t splFreq);
 
   /**
    * Performs a sampling speed test over 64 reads. The SPI interface
@@ -177,11 +206,6 @@ public:
 
 private:
 
-  uint16_t mVref;
-  uint8_t mCsPin;
-  uint32_t mSplSpeed;
-  SPIClass *mSpi;
-
   /**
    * Defines 16 bit SPI data. The structure implements an easy
    * access to each byte.
@@ -214,6 +238,13 @@ private:
    * @return the ADC value from the SPI response.
    */
   uint16_t transfer(SpiData cmd) const;
+
+private:
+
+  uint16_t mVref;
+  uint8_t mCsPin;
+  uint32_t mSplSpeed;
+  SPIClass *mSpi;
 };
 
 #endif // MCP3208_H_

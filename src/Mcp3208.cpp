@@ -8,26 +8,29 @@
 #define div_round(n,d) (((n) + ((d) >> 2)) / (d))
 
 
-MCP3208::MCP3208(uint16_t vref, uint8_t csPin, SPIClass *spi) :
-    mVref(vref),
-    mCsPin(csPin),
-    mSplSpeed(0),
-    mSpi(spi) {}
+MCP3208::MCP3208(uint16_t vref, uint8_t csPin, SPIClass *spi)
+  : mVref(vref)
+  , mCsPin(csPin)
+  , mSplSpeed(0)
+  , mSpi(spi) {}
 
-MCP3208::MCP3208(uint16_t vref, uint8_t csPin) :
-    MCP3208(vref, csPin, &SPI) {}
+MCP3208::MCP3208(uint16_t vref, uint8_t csPin)
+  : MCP3208(vref, csPin, &SPI) {}
 
-void MCP3208::calibrate(Channel ch) {
+void MCP3208::calibrate(Channel ch)
+{
   mSplSpeed = testSplSpeed(ch, 256);
 }
 
-uint16_t MCP3208::read(Channel ch) const {
+uint16_t MCP3208::read(Channel ch) const
+{
   // transfer spi data
   return transfer(createCmd(ch));
 }
 
 template <typename T>
-void MCP3208::read(Channel ch, T *data, uint16_t num) const {
+void MCP3208::readn(Channel ch, T *data, uint16_t num) const
+{
   // create command data
   SpiData cmd = createCmd(ch);
 
@@ -37,7 +40,8 @@ void MCP3208::read(Channel ch, T *data, uint16_t num) const {
 }
 
 template <typename T>
-void MCP3208::read(Channel ch, T *data, uint16_t num, uint32_t splFreq) {
+void MCP3208::readn(Channel ch, T *data, uint16_t num, uint32_t splFreq)
+{
   // create command data
   SpiData cmd = createCmd(ch);
   // required delay
@@ -50,11 +54,13 @@ void MCP3208::read(Channel ch, T *data, uint16_t num, uint32_t splFreq) {
   }
 }
 
-uint32_t MCP3208::testSplSpeed(Channel ch) const {
+uint32_t MCP3208::testSplSpeed(Channel ch) const
+{
   return testSplSpeed(ch, 64);
 }
 
-uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num) const {
+uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num) const
+{
   // start time
   uint32_t t1 = micros();
   // perform sampling
@@ -66,7 +72,8 @@ uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num) const {
   return div_round((t2 - t1) * 1000, num);
 }
 
-uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num, uint32_t splFreq) {
+uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num, uint32_t splFreq)
+{
   // required delay
   uint16_t delay = getSplDelay(ch, splFreq);
 
@@ -84,23 +91,28 @@ uint32_t MCP3208::testSplSpeed(Channel ch, uint16_t num, uint32_t splFreq) {
   return div_round((t2 - t1) * 1000, num);
 }
 
-uint16_t MCP3208::toAnalog(uint16_t raw) const {
-  return (static_cast<uint32_t>(raw) * mVref) / kRes;
+uint16_t MCP3208::toAnalog(uint16_t raw) const
+{
+  return (static_cast<uint32_t>(raw) * mVref) / (kRes - 1);
 }
 
-uint16_t MCP3208::toDigital(uint16_t val) const {
-  return (static_cast<uint32_t>(val) * kRes) / mVref;
+uint16_t MCP3208::toDigital(uint16_t val) const
+{
+  return (static_cast<uint32_t>(val) * (kRes - 1)) / mVref;
 }
 
-uint16_t MCP3208::getVref() const {
+uint16_t MCP3208::getVref() const
+{
   return mVref;
 }
 
-uint16_t MCP3208::getAnalogRes() const {
-  return (static_cast<uint32_t>(mVref) * 1000) / kRes;
+uint16_t MCP3208::getAnalogRes() const
+{
+  return (static_cast<uint32_t>(mVref) * 1000) / (kRes - 1);
 }
 
-MCP3208::SpiData MCP3208::createCmd(Channel ch) {
+MCP3208::SpiData MCP3208::createCmd(Channel ch)
+{
   // base command structure
   // 0b000001cccc000000
   // c: channel config
@@ -110,7 +122,8 @@ MCP3208::SpiData MCP3208::createCmd(Channel ch) {
   };
 }
 
-uint16_t MCP3208::getSplDelay(Channel ch, uint32_t splFreq) {
+uint16_t MCP3208::getSplDelay(Channel ch, uint32_t splFreq)
+{
   // requested sampling period (ns)
   uint32_t splTime = div_round(1000000000, splFreq);
 
@@ -122,8 +135,8 @@ uint16_t MCP3208::getSplDelay(Channel ch, uint32_t splFreq) {
   return (delay < 0) ? 0 : static_cast<uint16_t>(delay);
 }
 
-uint16_t MCP3208::transfer(SpiData cmd) const {
-
+uint16_t MCP3208::transfer(SpiData cmd) const
+{
   SpiData adc;
 
   // activate ADC with chip select
@@ -145,12 +158,12 @@ uint16_t MCP3208::transfer(SpiData cmd) const {
 /*
  * Explicit template instantiation for the supported data array types.
  */
-template void MCP3208::read<uint16_t>(Channel, uint16_t*, uint16_t) const;
-template void MCP3208::read<uint32_t>(Channel, uint32_t*, uint16_t) const;
-template void MCP3208::read<float>(Channel, float*, uint16_t) const;
-template void MCP3208::read<double>(Channel, double*, uint16_t) const;
+template void MCP3208::readn<uint16_t>(Channel, uint16_t*, uint16_t) const;
+template void MCP3208::readn<uint32_t>(Channel, uint32_t*, uint16_t) const;
+template void MCP3208::readn<float>(Channel, float*, uint16_t) const;
+template void MCP3208::readn<double>(Channel, double*, uint16_t) const;
 
-template void MCP3208::read<uint16_t>(Channel, uint16_t*, uint16_t, uint32_t);
-template void MCP3208::read<uint32_t>(Channel, uint32_t*, uint16_t, uint32_t);
-template void MCP3208::read<float>(Channel, float*, uint16_t, uint32_t);
-template void MCP3208::read<double>(Channel, double*, uint16_t, uint32_t);
+template void MCP3208::readn<uint16_t>(Channel, uint16_t*, uint16_t, uint32_t);
+template void MCP3208::readn<uint32_t>(Channel, uint32_t*, uint16_t, uint32_t);
+template void MCP3208::readn<float>(Channel, float*, uint16_t, uint32_t);
+template void MCP3208::readn<double>(Channel, double*, uint16_t, uint32_t);

@@ -42,7 +42,7 @@ void loop() {
   Serial.println("Reading...");
 
   t1 = micros();
-  adc.read(MCP3208::SINGLE_0, data, SPLS);
+  adc.read(MCP3208::SINGLE_0, data);
   t2 = micros();
 
   // sampling time

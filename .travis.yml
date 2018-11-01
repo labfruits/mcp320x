@@ -16,12 +16,8 @@ install:
   - pip install -U platformio
   - platformio update
 
-script: >
-  - platformio ci --lib="."
-  --board=uno
-  --board=due
-  --board=teensy31
-  --board=esp12e
+script:
+  - platformio ci --lib="." --board=uno --board=due --board=teensy31 --board=esp12e
 
 #before_deploy:
 #    - doxygen doc/Doxyfile

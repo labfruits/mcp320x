@@ -7,14 +7,20 @@ cache:
   directories:
     - "~/.platformio"
 
-env:
-  - PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
-  - PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
-  - PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
+addons:
+  apt:
+    packages:
+      - doxygen
+      - doxygen-doc
 
 install:
   - pip install -U platformio
   - platformio update
+
+env:
+  - PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
+  - PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
+  - PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
 
 # atmelavr
 # atmelsam

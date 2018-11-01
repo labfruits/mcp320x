@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/labfruits/mcp3208.svg?branch=master)](https://travis-ci.com/labfruits/mcp3208)
+
 # Arduino library for MCP3208/3204 ADC
 
 This library provides an interface to communicate with the MCP3208/3204 12 bit ADC over SPI.

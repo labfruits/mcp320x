@@ -1,59 +1,60 @@
 language: python
-python:
-  - "2.7"
+python: "2.7"
 
 sudo: false
 cache:
   directories:
     - "~/.platformio"
 
-addons:
-  apt:
-    packages:
-      - doxygen
-      - doxygen-doc
-
-install:
-  - pip install -U platformio
-  - platformio update
-
 jobs:
   include:
-    ### build stage
+    ### stage: build
     - stage: build
-      # atmelavr
-      # atmelsam
-      # espressif32
-      # espressif8266
-      # intel_arc32
-      # nordicnrf51
-      # nordicnrf52
-      # ststm32
-      # teensy
-      script:
-        - platformio ci --lib="."
-          --board=micro
-          --board=uno
-          --board=due
-          --board=tian
-          --board=adafruit_feather_m0
-          --board=esp32dev
-          --board=nodemcu-32s
-          --board=esp12e
-          --board=genuino101
-          --board=rfduino
-          --board=nrf52_dk
-          --board=genericSTM32F103CB
-          --board=teensy20
-          --board=teensy30
-          --board=teensylc
-      env:
-        - PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
-        - PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
-        - PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
+      install:
+        - pip install -U platformio
+        - platformio update
+      matrix:
+        include:
+          - name: "adc_sample.ino"
+            env: PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
+          - name: "read_buffer.ino"
+            env: PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
+          - name: "sample_limit.ino"
+            env: PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
+        # atmelavr
+        # atmelsam
+        # espressif32
+        # espressif8266
+        # intel_arc32
+        # nordicnrf51
+        # nordicnrf52
+        # ststm32
+        # teensy
+        script:
+          - platformio ci --lib="."
+            --board=micro
+            --board=uno
+            --board=due
+            --board=tian
+            --board=adafruit_feather_m0
+            --board=esp32dev
+            --board=nodemcu-32s
+            --board=esp12e
+            --board=genuino101
+            --board=rfduino
+            --board=nrf52_dk
+            --board=genericSTM32F103CB
+            --board=teensy20
+            --board=teensy30
+            --board=teensylc
 
-    ### deploy gh-pages stage
+    ### stage: deploy gh-pages
     - stage: GitHub gh-pages
+      addons:
+        apt:
+          packages:
+            - doxygen
+            - doxygen-doc
       script: skip
       before_deploy:
         - doxygen doxygen.cfg
@@ -67,7 +68,7 @@ jobs:
         on:
           branch: master
 
-    ### deploy release stage
+    ### stage: deploy release
     - stage: GitHub release
       script: skip
       deploy:

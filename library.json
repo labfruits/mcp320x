@@ -2,7 +2,8 @@
   "name": "Mcp3208",
   "keywords": "converter, signal, adc, analog, input, spi",
   "description": "Arduino library for the MCP3208/3204 12 bit ADC. The library supports all features of the chip and uses SPI for communication.",
-  "repository": {
+  "repository":
+  {
     "type": "git",
     "url": "https://github.com/labfruits/mcp3208.git"
   },
@@ -21,5 +22,16 @@
   "license": "MIT",
   "examples": "examples/*/*.ino",
   "frameworks": "arduino",
-  "platforms": "*"
+  "platforms":
+  [
+    "atmelavr",
+    "atmelsam",
+    "espressif32",
+    "espressif8266",
+    "intel_arc32",
+    "nordicnrf51",
+    "nordicnrf52",
+    "ststm32",
+    "teensy"
+  ]
 }

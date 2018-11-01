@@ -18,10 +18,38 @@ install:
 
 script:
   - platformio ci --lib="."
+    # atmelavr
+    --board=micro
     --board=uno
     --board=due
-    --board=teensy31
+    # atmelsam
+    --board=tian
+    --board=adafruit_feather_m0
+    # espressif32
+    --board=esp32dev
+    --board=nodemcu-32s
+    # espressif8266
     --board=esp12e
+    # intel_arc32
+    --board=genuino101
+    # microchippic32
+    --board=openbci
+    # nordicnrf51
+    --board=nrf51_dk
+    # nordicnrf52
+    --board=nrf52_dk
+    # ststm32
+    --board=genericSTM32F103C8
+    --board=nucleo_f030r8
+    # teensy
+    --board=teensy20
+    --board=teensy30
+    --board=teensy31
+    --board=teensy35
+    --board=teensy36
+    --board=teensylc
+    # timsp430
+    --board=lpmsp430f5529
 
 #before_deploy:
 #    - doxygen doc/Doxyfile

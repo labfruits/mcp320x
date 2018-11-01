@@ -56,7 +56,9 @@ void loop() {
   Serial.println("ms");
 
   uint32_t ns = adc.testSplSpeed(MCP3208::SINGLE_0, SPLS, SWSPL_FREQ);
-  Serial.printf("ADC sampling freq: %0.4fHz\n", 1000000000.0l / ns);
+  Serial.print("ADC sampling freq:");
+  Serial.print(1000000000.0l / ns);
+  Serial.println("Hz");
 
   delay(2000);
 }

@@ -21,12 +21,10 @@ install:
 # espressif32
 # espressif8266
 # intel_arc32
-# microchippic32
 # nordicnrf51
 # nordicnrf52
 # ststm32
 # teensy
-# timsp430
 script:
   - platformio ci --lib="."
     --board=micro
@@ -38,15 +36,12 @@ script:
     --board=nodemcu-32s
     --board=esp12e
     --board=genuino101
-    --board=openbci
-    --board=nrf51_dk
+    --board=rfduino
     --board=nrf52_dk
-    --board=genericSTM32F103C8
-    --board=nucleo_f030r8
+    --board=genericSTM32F103CB
     --board=teensy20
     --board=teensy30
     --board=teensylc
-    --board=lpmsp430f5529
 
 #before_deploy:
 #    - doxygen doc/Doxyfile

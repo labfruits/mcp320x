@@ -28,66 +28,6 @@ uint16_t MCP3208::read(Channel ch) const
   return transfer(createCmd(ch));
 }
 
-template <typename T>
-void MCP3208::readn(Channel ch, T *data, uint16_t num) const
-{
-  // create command data
-  SpiData cmd = createCmd(ch);
-
-  // transfer spi data
-  for (uint16_t i=0; i < num; i++)
-    data[i] = static_cast<T>(transfer(cmd));
-}
-
-template <typename T>
-void MCP3208::readn_if(Channel ch, T *data, uint16_t num,
-  const PredicateFn &p) const
-{
-  // create command data
-  SpiData cmd = createCmd(ch);
-
-  // sample until predicate is true
-  while (!p(transfer(cmd))) {}
-
-  // transfer spi data
-  for (uint16_t i=0; i < num; i++)
-    data[i] = static_cast<T>(transfer(cmd));
-}
-
-template <typename T>
-void MCP3208::readn(Channel ch, T *data, uint16_t num, uint32_t splFreq)
-{
-  // create command data
-  SpiData cmd = createCmd(ch);
-  // required delay
-  uint16_t delay = getSplDelay(ch, splFreq);
-
-  // transfer spi data
-  for (uint16_t i=0; i < num; i++) {
-    data[i] = static_cast<T>(transfer(cmd));
-    delayMicroseconds(delay);
-  }
-}
-
-template <typename T>
-void MCP3208::readn_if(Channel ch, T *data, uint16_t num, uint32_t splFreq,
-  const PredicateFn &p)
-{
-  // create command data
-  SpiData cmd = createCmd(ch);
-  // required delay
-  uint16_t delay = getSplDelay(ch, splFreq);
-
-  // sample until predicate is true
-  while (!p(transfer(cmd))) {}
-
-  // transfer spi data
-  for (uint16_t i=0; i < num; i++) {
-    data[i] = static_cast<T>(transfer(cmd));
-    delayMicroseconds(delay);
-  }
-}
-
 uint32_t MCP3208::testSplSpeed(Channel ch) const
 {
   return testSplSpeed(ch, 64);
@@ -189,25 +129,40 @@ uint16_t MCP3208::transfer(SpiData cmd) const
   return adc.value;
 }
 
+template <typename T>
+void MCP3208::transfer(SpiData cmd, T *data, uint16_t num) const
+{
+  for (uint16_t i=0; i < num; i++)
+    data[i] = static_cast<T>(transfer(cmd));
+}
+
+template <typename T>
+void MCP3208::transfer(SpiData cmd, T *data, uint16_t num,
+  uint16_t delay) const
+{
+  for (uint16_t i=0; i < num; i++) {
+    data[i] = static_cast<T>(transfer(cmd));
+    delayMicroseconds(delay);
+  }
+}
+
 /*
  * Explicit template instantiation for the supported data array types.
  */
-template void MCP3208::readn<uint16_t>(Channel, uint16_t*, uint16_t) const;
-template void MCP3208::readn<uint32_t>(Channel, uint32_t*, uint16_t) const;
-template void MCP3208::readn<float>(Channel, float*, uint16_t) const;
-template void MCP3208::readn<double>(Channel, double*, uint16_t) const;
+template
+void MCP3208::transfer<uint16_t>(SpiData, uint16_t*, uint16_t) const;
+template
+void MCP3208::transfer<uint32_t>(SpiData, uint32_t*, uint16_t) const;
+template
+void MCP3208::transfer<float>(SpiData, float*, uint16_t) const;
+template
+void MCP3208::transfer<double>(SpiData, double*, uint16_t) const;
 
-template void MCP3208::readn<uint16_t>(Channel, uint16_t*, uint16_t, uint32_t);
-template void MCP3208::readn<uint32_t>(Channel, uint32_t*, uint16_t, uint32_t);
-template void MCP3208::readn<float>(Channel, float*, uint16_t, uint32_t);
-template void MCP3208::readn<double>(Channel, double*, uint16_t, uint32_t);
-
-template void MCP3208::readn_if<uint16_t>(Channel, uint16_t*, uint16_t, const PredicateFn &p) const;
-template void MCP3208::readn_if<uint32_t>(Channel, uint32_t*, uint16_t, const PredicateFn &p) const;
-template void MCP3208::readn_if<float>(Channel, float*, uint16_t, const PredicateFn &p) const;
-template void MCP3208::readn_if<double>(Channel, double*, uint16_t, const PredicateFn &p) const;
-
-template void MCP3208::readn_if<uint16_t>(Channel, uint16_t*, uint16_t, uint32_t, const PredicateFn&);
-template void MCP3208::readn_if<uint32_t>(Channel, uint32_t*, uint16_t, uint32_t, const PredicateFn&);
-template void MCP3208::readn_if<float>(Channel, float*, uint16_t, uint32_t, const PredicateFn&);
-template void MCP3208::readn_if<double>(Channel, double*, uint16_t, uint32_t, const PredicateFn&);
+template
+void MCP3208::transfer<uint16_t>(SpiData, uint16_t*, uint16_t, uint16_t) const;
+template
+void MCP3208::transfer<uint32_t>(SpiData, uint32_t*, uint16_t, uint16_t) const;
+template
+void MCP3208::transfer<float>(SpiData, float*, uint16_t, uint16_t) const;
+template
+void MCP3208::transfer<double>(SpiData, double*, uint16_t, uint16_t) const;

@@ -9,22 +9,14 @@
 #ifndef MCP3208_H_
 #define MCP3208_H_
 
-#include <Arduino.h>
-// arduino breaks stdlib min,max
-#undef min
-#undef max
-
 #include <stdint.h>
 #include <stdbool.h>
-#include <functional>
+#include <Arduino.h>
 #include <SPI.h>
 
 class MCP3208 {
 
 public:
-
-  /** Predicate function signature */
-  using PredicateFn = std::function<bool(const uint16_t&)>;
 
   /** ADC resolution in bits. */
   static const uint8_t kResBits = 12;
@@ -107,23 +99,9 @@ public:
    * @param [out] data array to store the values.
    */
   template <typename T, size_t N>
-  void read(Channel ch, T (&data)[N])
+  void read(Channel ch, T (&data)[N]) const
   {
-    return readn(ch, data, N);
-  }
-
-  /**
-   * Reads the supplied channel and stores the data in the supplied
-   * data array after the predicate is true. The SPI interface must be
-   * initialized and put in a usable state before calling this function.
-   * @param [in] ch defines the channel to read from.
-   * @param [out] data array to store the values.
-   * @param [in] p predicate funtion to control sampling start.
-   */
-  template <typename T, size_t N>
-  void read_if(Channel ch, T (&data)[N], const PredicateFn &p)
-  {
-    return readn(ch, data, N, p);
+    readn(ch, data, N);
   }
 
   /**
@@ -139,7 +117,21 @@ public:
   template <typename T, size_t N>
   void read(Channel ch, T (&data)[N], uint32_t splFreq)
   {
-    return readn(ch, data, N, splFreq);
+    readn(ch, data, N, splFreq);
+  }
+
+  /**
+   * Reads the supplied channel and stores the data in the supplied
+   * data array after the predicate is true. The SPI interface must be
+   * initialized and put in a usable state before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] p predicate funtion to control sampling start.
+   */
+  template <typename T, size_t N, typename Predicate>
+  void read_if(Channel ch, T (&data)[N], Predicate p) const
+  {
+    readn_if(ch, data, N, p);
   }
 
   /**
@@ -153,11 +145,10 @@ public:
    * @param [in] splFreq sample frequency limit in hz.
    * @param [in] p predicate funtion to control sampling start.
    */
-  template <typename T, size_t N>
-  void read_if(Channel ch, T (&data)[N], uint32_t splFreq,
-    const PredicateFn &p)
+  template <typename T, size_t N, typename Predicate>
+  void read_if(Channel ch, T (&data)[N], uint32_t splFreq, Predicate p)
   {
-    return readn(ch, data, N, splFreq, p);
+    readn_if(ch, data, N, splFreq, p);
   }
 
   /**
@@ -170,23 +161,10 @@ public:
    * at least that size.
    */
   template <typename T>
-  void readn(Channel ch, T *data, uint16_t num) const;
-
-  /**
-   * Reads the supplied channel and stores N values in the supplied
-   * data array after the predicate is true. As long as the predicate
-   * is false, the function keeps sampling without storing any data.
-   * The SPI interface must be initialized and put in a usable state
-   * before calling this function.
-   * @param [in] ch defines the channel to read from.
-   * @param [out] data array to store the values.
-   * @param [in] num number of reads. The data array needs to be
-   * at least that size.
-   * @param [in] p predicate funtion to control sampling start.
-   */
-  template <typename T>
-  void readn_if(Channel ch, T *data, uint16_t num,
-    const PredicateFn &p) const;
+  void readn(Channel ch, T *data, uint16_t num) const
+  {
+    transfer(createCmd(ch), data, num);
+  }
 
   /**
    * Reads the supplied channel limited to the specified frequency and
@@ -201,7 +179,30 @@ public:
    * @param [in] splFreq sample frequency limit in hz.
    */
   template <typename T>
-  void readn(Channel ch, T *data, uint16_t num, uint32_t splFreq);
+  void readn(Channel ch, T *data, uint16_t num, uint32_t splFreq)
+  {
+    transfer(createCmd(ch), data, num, getSplDelay(ch, splFreq));
+  }
+
+  /**
+   * Reads the supplied channel and stores N values in the supplied
+   * data array after the predicate is true. As long as the predicate
+   * is false, the function keeps sampling without storing any data.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   * @param [in] p predicate funtion to control sampling start.
+   */
+  template <typename T, typename Predicate>
+  void readn_if(Channel ch, T *data, uint16_t num, Predicate p) const
+  {
+    SpiData cmd = createCmd(ch);
+    while (!p(transfer(cmd))) {}
+    transfer(cmd, data, num);
+  }
 
   /**
    * Reads the supplied channel limited to the specified frequency and
@@ -217,9 +218,14 @@ public:
    * @param [in] splFreq sample frequency limit in hz.
    * @param [in] p predicate funtion to control sampling start.
    */
-  template <typename T>
+  template <typename T, typename Predicate>
   void readn_if(Channel ch, T *data, uint16_t num, uint32_t splFreq,
-    const PredicateFn &p);
+    Predicate p)
+  {
+    SpiData cmd = createCmd(ch);
+    while (!p(transfer(cmd))) {}
+    transfer(cmd, data, num, getSplDelay(ch, splFreq));
+  }
 
   /**
    * Performs a sampling speed test over 64 reads. The SPI interface
@@ -313,6 +319,29 @@ private:
    * @return the ADC value from the SPI response.
    */
   uint16_t transfer(SpiData cmd) const;
+
+  /**
+   * Transfers the supplied SPI data command for the requested
+   * number of samples.
+   * @param [in] cmd the SPI data command to transfer.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   */
+  template <typename T>
+  void transfer(SpiData cmd, T *data, uint16_t num) const;
+
+  /**
+   * Transfers the supplied SPI data command for the requested
+   * number of samples with delay between reads.
+   * @param [in] cmd the SPI data command to transfer.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   * @param [in] delay in us.
+   */
+  template <typename T>
+  void transfer(SpiData cmd, T *data, uint16_t num, uint16_t delay) const;
 
 private:
 

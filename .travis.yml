@@ -62,6 +62,7 @@ jobs:
       env:
       before_deploy:
         - mkdir -p doxygen/docs
+        - touch doxygen/.nojekyll
         - doxygen doxygen.cfg
       deploy:
         provider: pages

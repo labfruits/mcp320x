@@ -6,6 +6,10 @@ cache:
   directories:
     - "~/.platformio"
 
+install:
+  - pip install -U platformio
+  - platformio update
+
 # atmelavr
 # atmelsam
 # espressif32
@@ -40,19 +44,13 @@ env:
 
 stages:
   - test
-  - gh-pages
+  - docs
   - release
 
 jobs:
   include:
-    ### stage: test
-    - stage: test
-      install:
-        - pip install -U platformio
-        - platformio update
-
     ### stage: deploy gh-pages
-    - stage: gh-pages
+    - stage: docs
       addons:
         apt:
           packages:

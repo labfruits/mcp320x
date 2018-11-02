@@ -52,6 +52,7 @@ jobs:
     ### stage: test
     ### stage: deploy docs
     - stage: docs
+      install:
       addons:
         apt:
           packages:
@@ -73,6 +74,7 @@ jobs:
 
     ### stage: deploy release
     - stage: release
+      install:
       script: skip
       env:
       deploy:

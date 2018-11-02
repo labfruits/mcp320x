@@ -7,22 +7,21 @@ cache:
     - "~/.platformio"
 
 stages:
-  - test
+  - build
   - gh-pages
   - release
-
-env:
-  - PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
-  - PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
-  - PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
 
 jobs:
   include:
     ### stage: test
-    - stage: test
+    - stage: build
       install:
         - pip install -U platformio
         - platformio update
+      env:
+        - PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
+        - PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
+        - PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
       # atmelavr
       # atmelsam
       # espressif32

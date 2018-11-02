@@ -9,10 +9,14 @@
 #ifndef MCP3208_H_
 #define MCP3208_H_
 
-#include <cstdint>
-#include <cstdbool>
-#include <functional>
 #include <Arduino.h>
+// arduino breaks stdlib min,max
+#undef min
+#undef max
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <functional>
 #include <SPI.h>
 
 class MCP3208 {

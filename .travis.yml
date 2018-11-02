@@ -61,6 +61,7 @@ jobs:
       script: skip
       env:
       before_deploy:
+        - mkdir -p doxygen/docs
         - doxygen doxygen.cfg
       deploy:
         provider: pages

@@ -40,12 +40,46 @@ void MCP3208::readn(Channel ch, T *data, uint16_t num) const
 }
 
 template <typename T>
+void MCP3208::readn_if(Channel ch, T *data, uint16_t num,
+  const PredicateFn &p) const
+{
+  // create command data
+  SpiData cmd = createCmd(ch);
+
+  // sample until predicate is true
+  while (!p(transfer(cmd))) {}
+
+  // transfer spi data
+  for (uint16_t i=0; i < num; i++)
+    data[i] = static_cast<T>(transfer(cmd));
+}
+
+template <typename T>
 void MCP3208::readn(Channel ch, T *data, uint16_t num, uint32_t splFreq)
 {
   // create command data
   SpiData cmd = createCmd(ch);
   // required delay
   uint16_t delay = getSplDelay(ch, splFreq);
+
+  // transfer spi data
+  for (uint16_t i=0; i < num; i++) {
+    data[i] = static_cast<T>(transfer(cmd));
+    delayMicroseconds(delay);
+  }
+}
+
+template <typename T>
+void MCP3208::readn_if(Channel ch, T *data, uint16_t num, uint32_t splFreq,
+  const PredicateFn &p)
+{
+  // create command data
+  SpiData cmd = createCmd(ch);
+  // required delay
+  uint16_t delay = getSplDelay(ch, splFreq);
+
+  // sample until predicate is true
+  while (!p(transfer(cmd))) {}
 
   // transfer spi data
   for (uint16_t i=0; i < num; i++) {
@@ -167,3 +201,13 @@ template void MCP3208::readn<uint16_t>(Channel, uint16_t*, uint16_t, uint32_t);
 template void MCP3208::readn<uint32_t>(Channel, uint32_t*, uint16_t, uint32_t);
 template void MCP3208::readn<float>(Channel, float*, uint16_t, uint32_t);
 template void MCP3208::readn<double>(Channel, double*, uint16_t, uint32_t);
+
+template void MCP3208::readn_if<uint16_t>(Channel, uint16_t*, uint16_t, const PredicateFn &p) const;
+template void MCP3208::readn_if<uint32_t>(Channel, uint32_t*, uint16_t, const PredicateFn &p) const;
+template void MCP3208::readn_if<float>(Channel, float*, uint16_t, const PredicateFn &p) const;
+template void MCP3208::readn_if<double>(Channel, double*, uint16_t, const PredicateFn &p) const;
+
+template void MCP3208::readn_if<uint16_t>(Channel, uint16_t*, uint16_t, uint32_t, const PredicateFn&);
+template void MCP3208::readn_if<uint32_t>(Channel, uint32_t*, uint16_t, uint32_t, const PredicateFn&);
+template void MCP3208::readn_if<float>(Channel, float*, uint16_t, uint32_t, const PredicateFn&);
+template void MCP3208::readn_if<double>(Channel, double*, uint16_t, uint32_t, const PredicateFn&);

@@ -9,13 +9,18 @@
 #ifndef MCP3208_H_
 #define MCP3208_H_
 
-#include <stdint.h>
+#include <cstdint>
+#include <cstdbool>
+#include <functional>
 #include <Arduino.h>
 #include <SPI.h>
 
 class MCP3208 {
 
 public:
+
+  /** Predicate function signature */
+  using PredicateFn = std::function<bool(const uint16_t&)>;
 
   /** ADC resolution in bits. */
   static const uint8_t kResBits = 12;
@@ -104,6 +109,20 @@ public:
   }
 
   /**
+   * Reads the supplied channel and stores the data in the supplied
+   * data array after the predicate is true. The SPI interface must be
+   * initialized and put in a usable state before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] p predicate funtion to control sampling start.
+   */
+  template <typename T, size_t N>
+  void read_if(Channel ch, T (&data)[N], const PredicateFn &p)
+  {
+    return readn(ch, data, N, p);
+  }
+
+  /**
    * Reads the supplied channel limited to the specified frequency and
    * stores the data in the supplied data array. The sample rate limit
    * is software controlled, and has a low precision.
@@ -120,6 +139,24 @@ public:
   }
 
   /**
+   * Reads the supplied channel limited to the specified frequency and
+   * stores the data in the supplied data array after the predicate is true.
+   * The sample rate limit is software controlled, and has a low precision.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] splFreq sample frequency limit in hz.
+   * @param [in] p predicate funtion to control sampling start.
+   */
+  template <typename T, size_t N>
+  void read_if(Channel ch, T (&data)[N], uint32_t splFreq,
+    const PredicateFn &p)
+  {
+    return readn(ch, data, N, splFreq, p);
+  }
+
+  /**
    * Reads the supplied channel and stores N values in the supplied
    * data array. The SPI interface must be initialized and put in a
    * usable state before calling this function.
@@ -130,6 +167,22 @@ public:
    */
   template <typename T>
   void readn(Channel ch, T *data, uint16_t num) const;
+
+  /**
+   * Reads the supplied channel and stores N values in the supplied
+   * data array after the predicate is true. As long as the predicate
+   * is false, the function keeps sampling without storing any data.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   * @param [in] p predicate funtion to control sampling start.
+   */
+  template <typename T>
+  void readn_if(Channel ch, T *data, uint16_t num,
+    const PredicateFn &p) const;
 
   /**
    * Reads the supplied channel limited to the specified frequency and
@@ -145,6 +198,24 @@ public:
    */
   template <typename T>
   void readn(Channel ch, T *data, uint16_t num, uint32_t splFreq);
+
+  /**
+   * Reads the supplied channel limited to the specified frequency and
+   * stores N values in the supplied data array after the predicate
+   * is true. As long as the predicate is false, the function keeps
+   * sampling without storing any data.
+   * The SPI interface must be initialized and put in a usable state
+   * before calling this function.
+   * @param [in] ch defines the channel to read from.
+   * @param [out] data array to store the values.
+   * @param [in] num number of reads. The data array needs to be
+   * at least that size.
+   * @param [in] splFreq sample frequency limit in hz.
+   * @param [in] p predicate funtion to control sampling start.
+   */
+  template <typename T>
+  void readn_if(Channel ch, T *data, uint16_t num, uint32_t splFreq,
+    const PredicateFn &p);
 
   /**
    * Performs a sampling speed test over 64 reads. The SPI interface

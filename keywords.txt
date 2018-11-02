@@ -15,7 +15,9 @@ Channel	KEYWORD1
 
 calibrate	KEYWORD2
 read	KEYWORD2
+read_if	KEYWORD2
 readn KEYWORD2
+readn_if	KEYWORD2
 testSplSpeed	KEYWORD2
 toAnalog	KEYWORD2
 toDigital	KEYWORD2

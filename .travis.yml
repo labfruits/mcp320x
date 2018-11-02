@@ -58,13 +58,13 @@ jobs:
             - doxygen
             - doxygen-doc
       script: skip
-      env: skip
+      env:
       before_deploy:
         - doxygen doxygen.cfg
       deploy:
         provider: pages
         target-branch: gh-pages
-        local_dir: docs/html
+        local_dir: doxygen
         skip-cleanup: true
         keep-history: true
         github-token: $GITHUB_TOKEN
@@ -74,7 +74,7 @@ jobs:
     ### stage: deploy release
     - stage: release
       script: skip
-      env: skip
+      env:
       deploy:
         provider: releases
         api_key: $GITHUB_TOKEN

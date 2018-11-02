@@ -6,48 +6,50 @@ cache:
   directories:
     - "~/.platformio"
 
+# atmelavr
+# atmelsam
+# espressif32
+# espressif8266
+# intel_arc32
+# nordicnrf51
+# nordicnrf52
+# ststm32
+# teensy
+script:
+  - platformio ci --lib="."
+    --board=micro
+    --board=uno
+    --board=due
+    --board=tian
+    --board=adafruit_feather_m0
+    --board=esp32dev
+    --board=nodemcu-32s
+    --board=esp12e
+    --board=genuino101
+    --board=rfduino
+    --board=nrf52_dk
+    --board=genericSTM32F103CB
+    --board=teensy20
+    --board=teensy30
+    --board=teensylc
+
+env:
+  - PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
+  - PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
+  - PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
+
 stages:
-  - build
+  - test
   - gh-pages
   - release
 
 jobs:
   include:
     ### stage: test
-    - stage: build
+    - stage: test
       install:
         - pip install -U platformio
         - platformio update
-      env:
-        - PLATFORMIO_CI_SRC=examples/adc_sample/adc_sample.ino
-        - PLATFORMIO_CI_SRC=examples/read_buffer/read_buffer.ino
-        - PLATFORMIO_CI_SRC=examples/sample_limit/sample_limit.ino
-      # atmelavr
-      # atmelsam
-      # espressif32
-      # espressif8266
-      # intel_arc32
-      # nordicnrf51
-      # nordicnrf52
-      # ststm32
-      # teensy
-      script:
-        - platformio ci --lib="."
-          --board=micro
-          --board=uno
-          --board=due
-          --board=tian
-          --board=adafruit_feather_m0
-          --board=esp32dev
-          --board=nodemcu-32s
-          --board=esp12e
-          --board=genuino101
-          --board=rfduino
-          --board=nrf52_dk
-          --board=genericSTM32F103CB
-          --board=teensy20
-          --board=teensy30
-          --board=teensylc
 
     ### stage: deploy gh-pages
     - stage: gh-pages

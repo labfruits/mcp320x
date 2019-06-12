@@ -1,8 +1,8 @@
 /**
- * @file MCP320x.cpp
+ * @file Mcp320x.cpp
  * @author  Patrick Rogalla <patrick@labfruits.com>
  */
-#include "MCP320x.h"
+#include "Mcp320x.h"
 
 // divide n by d and round to next integer
 #define div_round(n,d) (((n) + ((d) >> 2)) / (d))

@@ -30,7 +30,7 @@ script:
     --board=nodemcu-32s
     --board=esp12e
     --board=genuino101
-    --board=nrf51_dk
+    --board=bluz_dk
     --board=nrf52_dk
     --board=genericSTM32F103CB
     --board=teensy2

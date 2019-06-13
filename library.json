@@ -1,7 +1,7 @@
 {
   "name": "Mcp3208",
   "keywords": "converter, signal, adc, analog, input, spi",
-  "description": "Arduino library for the MCP3208/3204 12 bit ADC. The library supports all features of the chip and uses SPI for communication.",
+  "description": "Arduino library for the MCP320x 12 bit ADC family. The library supports: MCP3201, MCP3202, MCP3204, MCP3208",
   "repository":
   {
     "type": "git",
@@ -18,7 +18,7 @@
     "name": "SPI",
     "frameworks": "arduino"
   },
-  "version": "1.3.0",
+  "version": "1.4.0",
   "license": "MIT",
   "examples": "examples/*/*.ino",
   "frameworks": "arduino",

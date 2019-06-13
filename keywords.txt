@@ -6,6 +6,9 @@
 # Datatypes (KEYWORD1)
 #######################################
 
+MCP3201	KEYWORD1
+MCP3202	KEYWORD1
+MCP3204	KEYWORD1
 MCP3208	KEYWORD1
 Channel	KEYWORD1
 

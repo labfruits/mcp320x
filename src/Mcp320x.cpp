@@ -33,7 +33,7 @@ void MCP320x<T>::calibrate(Channel ch)
 template <typename T>
 uint16_t MCP320x<T>::read(Channel ch) const
 {
-  return transfer(createCmd(ch));
+  return execute(createCmd(ch));
 }
 
 template <typename T>
@@ -45,10 +45,11 @@ uint32_t MCP320x<T>::testSplSpeed(Channel ch) const
 template <typename T>
 uint32_t MCP320x<T>::testSplSpeed(Channel ch, uint16_t num) const
 {
+  auto cmd = createCmd(ch);
   // start time
   uint32_t t1 = micros();
   // perform sampling
-  for (uint16_t i = 0; i < num; i++) read(ch);
+  for (uint16_t i = 0; i < num; i++) execute(cmd);
   // stop time
   uint32_t t2 = micros();
 
@@ -62,11 +63,12 @@ uint32_t MCP320x<T>::testSplSpeed(Channel ch, uint16_t num, uint32_t splFreq)
   // required delay
   uint16_t delay = getSplDelay(ch, splFreq);
 
+  auto cmd = createCmd(ch);
   // start time
   uint32_t t1 = micros();
   // perform sampling
   for (uint16_t i = 0; i < num; i++) {
-    read(ch);
+    execute(cmd);
     delayMicroseconds(delay);
   }
   // stop time
@@ -118,7 +120,7 @@ template <>
 MCP3201::Command<MCP3201Ch> MCP3201::createCmd(MCP3201Ch ch)
 {
   // no command required
-  return { .value = 0x0 };
+  return {};
 }
 
 template <>

@@ -1,11 +1,11 @@
 {
-  "name": "Mcp3208",
+  "name": "Mcp320x",
   "keywords": "converter, signal, adc, analog, input, spi",
   "description": "Arduino library for the MCP320x 12 bit ADC family. The library supports: MCP3201, MCP3202, MCP3204, MCP3208",
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/labfruits/mcp3208.git"
+    "url": "https://github.com/labfruits/mcp320x.git"
   },
   "authors":
   {

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>Mcp3208: MCP320x&lt; ChannelType &gt; Class Template Reference</title>
+<title>Mcp320x: MCP320x&lt; ChannelType &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -17,7 +17,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Mcp3208
+   <div id="projectname">Mcp320x
    </div>
   </td>
  </tr>
@@ -324,7 +324,7 @@ template&lt;typename T &gt; </div>
 
 <p>References <a class="el" href="_mcp320x_8h_source.html#l00449">MCP320x&lt; ChannelType &gt;::mSplSpeed</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00040">MCP320x&lt; ChannelType &gt;::testSplSpeed()</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00104">MCP320x&lt; ChannelType &gt;::getSplDelay()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00106">MCP320x&lt; ChannelType &gt;::getSplDelay()</a>.</p>
 
 </div>
 </div>
@@ -357,9 +357,9 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the SPI data. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00118">118</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00120">120</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00034">MCP320x&lt; ChannelType &gt;::read()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00034">MCP320x&lt; ChannelType &gt;::read()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00046">MCP320x&lt; ChannelType &gt;::testSplSpeed()</a>.</p>
 
 </div>
 </div>
@@ -392,9 +392,11 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the ADC value from the SPI response. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00161">161</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00163">163</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
-<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00185">MCP320x&lt; ChannelType &gt;::transfer()</a>.</p>
+<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00187">MCP320x&lt; ChannelType &gt;::transfer()</a>.</p>
+
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00034">MCP320x&lt; ChannelType &gt;::read()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00046">MCP320x&lt; ChannelType &gt;::testSplSpeed()</a>.</p>
 
 </div>
 </div>
@@ -529,7 +531,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the analog resolution in µV based on the defined reference voltage. </p><dl class="section return"><dt>Returns</dt><dd>the analog resolution in µV. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00098">98</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00100">100</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
 <p>References <a class="el" href="_mcp320x_8h_source.html#l00122">MCP320x&lt; ChannelType &gt;::kRes</a>, and <a class="el" href="_mcp320x_8h_source.html#l00447">MCP320x&lt; ChannelType &gt;::mVref</a>.</p>
 
@@ -576,11 +578,11 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the delay in us. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00104">104</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00106">106</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
 <p>References <a class="el" href="_mcp320x_8cpp_source.html#l00028">MCP320x&lt; ChannelType &gt;::calibrate()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00008">div_round</a>, and <a class="el" href="_mcp320x_8h_source.html#l00449">MCP320x&lt; ChannelType &gt;::mSplSpeed</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00060">MCP320x&lt; ChannelType &gt;::testSplSpeed()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00061">MCP320x&lt; ChannelType &gt;::testSplSpeed()</a>.</p>
 
 </div>
 </div>
@@ -600,7 +602,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the reference voltage. </p><dl class="section return"><dt>Returns</dt><dd>the configured reference voltage in mV. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00092">92</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00094">94</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
 <p>References <a class="el" href="_mcp320x_8h_source.html#l00447">MCP320x&lt; ChannelType &gt;::mVref</a>.</p>
 
@@ -631,9 +633,7 @@ template&lt;typename T &gt; </div>
 
 <p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00034">34</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
-<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00118">MCP320x&lt; ChannelType &gt;::createCmd()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00185">MCP320x&lt; ChannelType &gt;::transfer()</a>.</p>
-
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00046">MCP320x&lt; ChannelType &gt;::testSplSpeed()</a>.</p>
+<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00120">MCP320x&lt; ChannelType &gt;::createCmd()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00163">MCP320x&lt; ChannelType &gt;::execute()</a>.</p>
 
 </div>
 </div>
@@ -1162,7 +1162,7 @@ template&lt;typename T &gt; </div>
 
 <p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00046">46</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
-<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00008">div_round</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00034">MCP320x&lt; ChannelType &gt;::read()</a>.</p>
+<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00120">MCP320x&lt; ChannelType &gt;::createCmd()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00008">div_round</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00163">MCP320x&lt; ChannelType &gt;::execute()</a>.</p>
 
 </div>
 </div>
@@ -1207,9 +1207,9 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the average sampling time needed for one sample in ns. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00060">60</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00061">61</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
-<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00008">div_round</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00104">MCP320x&lt; ChannelType &gt;::getSplDelay()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00034">MCP320x&lt; ChannelType &gt;::read()</a>.</p>
+<p>References <a class="el" href="_mcp320x_8cpp_source.html#l00120">MCP320x&lt; ChannelType &gt;::createCmd()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00008">div_round</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00163">MCP320x&lt; ChannelType &gt;::execute()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00106">MCP320x&lt; ChannelType &gt;::getSplDelay()</a>.</p>
 
 </div>
 </div>
@@ -1236,7 +1236,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the converted analog value in mV. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00080">80</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00082">82</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
 <p>References <a class="el" href="_mcp320x_8h_source.html#l00122">MCP320x&lt; ChannelType &gt;::kRes</a>, and <a class="el" href="_mcp320x_8h_source.html#l00447">MCP320x&lt; ChannelType &gt;::mVref</a>.</p>
 
@@ -1265,7 +1265,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the digital representation off the supplied analog value. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00086">86</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00088">88</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
 <p>References <a class="el" href="_mcp320x_8h_source.html#l00122">MCP320x&lt; ChannelType &gt;::kRes</a>, and <a class="el" href="_mcp320x_8h_source.html#l00447">MCP320x&lt; ChannelType &gt;::mVref</a>.</p>
 
@@ -1295,11 +1295,11 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Transfers without SPI command data. </p><dl class="section return"><dt>Returns</dt><dd>the ADC value from the SPI response. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00185">185</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00187">187</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
 <p>References <a class="el" href="_mcp320x_8h_source.html#l00367">MCP320x&lt; ChannelType &gt;::SpiData::hiByte</a>, <a class="el" href="_mcp320x_8h_source.html#l00366">MCP320x&lt; ChannelType &gt;::SpiData::loByte</a>, <a class="el" href="_mcp320x_8h_source.html#l00448">MCP320x&lt; ChannelType &gt;::mCsPin</a>, <a class="el" href="_mcp320x_8h_source.html#l00450">MCP320x&lt; ChannelType &gt;::mSpi</a>, and <a class="el" href="_mcp320x_8h_source.html#l00364">MCP320x&lt; ChannelType &gt;::SpiData::value</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00161">MCP320x&lt; ChannelType &gt;::execute()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00034">MCP320x&lt; ChannelType &gt;::read()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00163">MCP320x&lt; ChannelType &gt;::execute()</a>.</p>
 
 </div>
 </div>
@@ -1334,7 +1334,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the ADC value from the SPI response. </dd></dl>
 
-<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00206">206</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_mcp320x_8cpp_source.html#l00208">208</a> of file <a class="el" href="_mcp320x_8cpp_source.html">Mcp320x.cpp</a>.</p>
 
 <p>References <a class="el" href="_mcp320x_8h_source.html#l00367">MCP320x&lt; ChannelType &gt;::SpiData::hiByte</a>, <a class="el" href="_mcp320x_8h_source.html#l00366">MCP320x&lt; ChannelType &gt;::SpiData::loByte</a>, <a class="el" href="_mcp320x_8h_source.html#l00448">MCP320x&lt; ChannelType &gt;::mCsPin</a>, <a class="el" href="_mcp320x_8h_source.html#l00450">MCP320x&lt; ChannelType &gt;::mSpi</a>, and <a class="el" href="_mcp320x_8h_source.html#l00364">MCP320x&lt; ChannelType &gt;::SpiData::value</a>.</p>
 
@@ -1364,7 +1364,7 @@ template&lt;typename ChannelType &gt; </div>
 
 <p>Definition at line <a class="el" href="_mcp320x_8h_source.html#l00122">122</a> of file <a class="el" href="_mcp320x_8h_source.html">Mcp320x.h</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00098">MCP320x&lt; ChannelType &gt;::getAnalogRes()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00080">MCP320x&lt; ChannelType &gt;::toAnalog()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00086">MCP320x&lt; ChannelType &gt;::toDigital()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00100">MCP320x&lt; ChannelType &gt;::getAnalogRes()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00082">MCP320x&lt; ChannelType &gt;::toAnalog()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00088">MCP320x&lt; ChannelType &gt;::toDigital()</a>.</p>
 
 </div>
 </div>
@@ -1415,7 +1415,7 @@ template&lt;typename ChannelType &gt; </div>
 
 <p>Definition at line <a class="el" href="_mcp320x_8h_source.html#l00448">448</a> of file <a class="el" href="_mcp320x_8h_source.html">Mcp320x.h</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00185">MCP320x&lt; ChannelType &gt;::transfer()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00187">MCP320x&lt; ChannelType &gt;::transfer()</a>.</p>
 
 </div>
 </div>
@@ -1441,7 +1441,7 @@ template&lt;typename ChannelType &gt; </div>
 
 <p>Definition at line <a class="el" href="_mcp320x_8h_source.html#l00450">450</a> of file <a class="el" href="_mcp320x_8h_source.html">Mcp320x.h</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00185">MCP320x&lt; ChannelType &gt;::transfer()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00187">MCP320x&lt; ChannelType &gt;::transfer()</a>.</p>
 
 </div>
 </div>
@@ -1467,7 +1467,7 @@ template&lt;typename ChannelType &gt; </div>
 
 <p>Definition at line <a class="el" href="_mcp320x_8h_source.html#l00449">449</a> of file <a class="el" href="_mcp320x_8h_source.html">Mcp320x.h</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00028">MCP320x&lt; ChannelType &gt;::calibrate()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00104">MCP320x&lt; ChannelType &gt;::getSplDelay()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00028">MCP320x&lt; ChannelType &gt;::calibrate()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00106">MCP320x&lt; ChannelType &gt;::getSplDelay()</a>.</p>
 
 </div>
 </div>
@@ -1493,7 +1493,7 @@ template&lt;typename ChannelType &gt; </div>
 
 <p>Definition at line <a class="el" href="_mcp320x_8h_source.html#l00447">447</a> of file <a class="el" href="_mcp320x_8h_source.html">Mcp320x.h</a>.</p>
 
-<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00098">MCP320x&lt; ChannelType &gt;::getAnalogRes()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00092">MCP320x&lt; ChannelType &gt;::getVref()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00080">MCP320x&lt; ChannelType &gt;::toAnalog()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00086">MCP320x&lt; ChannelType &gt;::toDigital()</a>.</p>
+<p>Referenced by <a class="el" href="_mcp320x_8cpp_source.html#l00100">MCP320x&lt; ChannelType &gt;::getAnalogRes()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00094">MCP320x&lt; ChannelType &gt;::getVref()</a>, <a class="el" href="_mcp320x_8cpp_source.html#l00082">MCP320x&lt; ChannelType &gt;::toAnalog()</a>, and <a class="el" href="_mcp320x_8cpp_source.html#l00088">MCP320x&lt; ChannelType &gt;::toDigital()</a>.</p>
 
 </div>
 </div>

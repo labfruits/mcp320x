@@ -1,28 +1,80 @@
 /**
- * @file Mcp3208.h
+ * @file Mcp320x.h
  * @author Patrick Rogalla <patrick@labfruits.com>
  *
- * Interface for the Microchip MSP3208/3204 12 bit ADC.
- * The class is implemented for the 8 channel version, but the 4 channel
- * version is fully supported and only limmeted by the number of channles.
+ * Interface for the Microchip MCP3208/3204/3202/3201 12 bit ADC.
+ * The class is implemented for all available channel versions of the chip.
  */
-#ifndef MCP3208_H_
-#define MCP3208_H_
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <Arduino.h>
 #include <SPI.h>
 
-class MCP3208 {
+namespace MCP320xTypes {
 
-public:
+namespace MCP3201 {
+  /**
+   * The ADC has 1 fixed non configurable input.
+   */
+  enum Channel {
+    SINGLE_0 = 0x0  /**< single channel 0 */
+  };
+};
 
-  /** ADC resolution in bits. */
-  static const uint8_t kResBits = 12;
-  /** ADC resolution. */
-  static const uint16_t kRes = (1 << kResBits);
+namespace MCP3202 {
+  /**
+   * The ADC has 2 inputs, usable as 2 individually single inputs with
+   * reference to analog ground or 1 differential input. The polarity
+   * of each differential input can be configured.
+   *
+   * bits|  2  | 1
+   * :--:|:---:|:-:
+   *  -  |type |ch
+   *
+   *  -  |      description
+   * :--:|:--------------------------
+   * type| 1 bit for single(1) or differential(0) input
+   * ch  | 1 bit for channel number selection
+   */
+  enum Channel {
+    SINGLE_0 = 0b10,  /**< single channel 0 */
+    SINGLE_1 = 0b11,  /**< single channel 1 */
+    DIFF_0PN = 0b00,  /**< differential channel 0 (input 0+,1-) */
+    DIFF_0NP = 0b01,  /**< differential channel 0 (input 0-,1+) */
+  };
+};
 
+namespace MCP3204 {
+  /**
+   * The ADC has 4 inputs, usable as 4 individually single inputs with
+   * reference to analog ground or 2 differential inputs. The polarity
+   * of each differential input can be configured.
+   *
+   * bits|  4  | 3 | 2 | 1
+   * :--:|:---:|:-:|:-:|:-:
+   *  -  |type | x |ch |ch
+   *
+   *  -  |      description
+   * :--:|:--------------------------
+   * type| 1 bit for single(1) or differential(0) input
+   * x   | 1 bit unused
+   * ch  | 2 bit for channel number selection
+   */
+  enum Channel {
+    SINGLE_0 = 0b1000,  /**< single channel 0 */
+    SINGLE_1 = 0b1001,  /**< single channel 1 */
+    SINGLE_2 = 0b1010,  /**< single channel 2 */
+    SINGLE_3 = 0b1011,  /**< single channel 3 */
+    DIFF_0PN = 0b0000,  /**< differential channel 0 (input 0+,1-) */
+    DIFF_0NP = 0b0001,  /**< differential channel 0 (input 0-,1+) */
+    DIFF_1PN = 0b0010,  /**< differential channel 1 (input 2+,3-) */
+    DIFF_1NP = 0b0011   /**< differential channel 1 (input 2-,3+) */
+  };
+};
+
+namespace MCP3208 {
   /**
    * The ADC has 8 inputs, usable as 8 individually single inputs with
    * reference to analog ground or 4 differential inputs. The polarity
@@ -55,24 +107,40 @@ public:
     DIFF_3PN = 0b0110,  /**< differential channel 3 (input 6+,7-) */
     DIFF_3NP = 0b0111   /**< differential channel 3 (input 6-,7+) */
   };
+};
+
+}; // namespace MCP320xTypes
+
+template <typename ChannelType>
+class MCP320x {
+
+public:
+
+  /** ADC resolution in bits. */
+  static const uint8_t kResBits = 12;
+  /** ADC resolution. */
+  static const uint16_t kRes = (1 << kResBits);
+
+  /** ADC Channel configuration. */
+  using Channel = ChannelType;
 
   /**
-   * Initiates a MCP3208 object. The chip select pin must be already
+   * Initiates a MCP320x object. The chip select pin must be already
    * configured as output.
    * @param [in] vref ADC reference voltage in mV.
    * @param [in] csPin pin number to use for chip select.
    * @param [in] spi reference to the SPI interface to use.
    */
-  MCP3208(uint16_t vref, uint8_t csPin, SPIClass *spi);
+  MCP320x(uint16_t vref, uint8_t csPin, SPIClass *spi);
 
   /**
-   * Initiates a MCP3208 object. The chip select pin must be already
+   * Initiates a MCP320x object. The chip select pin must be already
    * configured as output. The default SPI interface will be used for
    * communication.
    * @param [in] vref the ADC reference voltage in mV.
    * @param [in] csPin the pin number to use for chip select.
    */
-  MCP3208(uint16_t vref, uint8_t csPin);
+  MCP320x(uint16_t vref, uint8_t csPin);
 
   /**
    * Calibrates read timing using the supplied channel. A calibration
@@ -80,6 +148,7 @@ public:
    * that could have an impact on the sampling speed.
    * The SPI interface must be initialized and put in a usable state
    * before calling this function.
+   * @param [in] ch defines the channel to use for calibration.
    */
   void calibrate(Channel ch);
 
@@ -163,7 +232,7 @@ public:
   template <typename T>
   void readn(Channel ch, T *data, uint16_t num) const
   {
-    transfer(createCmd(ch), data, num);
+    execute(createCmd(ch), data, num);
   }
 
   /**
@@ -181,7 +250,7 @@ public:
   template <typename T>
   void readn(Channel ch, T *data, uint16_t num, uint32_t splFreq)
   {
-    transfer(createCmd(ch), data, num, getSplDelay(ch, splFreq));
+    execute(createCmd(ch), data, num, getSplDelay(ch, splFreq));
   }
 
   /**
@@ -199,9 +268,9 @@ public:
   template <typename T, typename Predicate>
   void readn_if(Channel ch, T *data, uint16_t num, Predicate p) const
   {
-    SpiData cmd = createCmd(ch);
-    while (!p(transfer(cmd))) {}
-    transfer(cmd, data, num);
+    auto cmd = createCmd(ch);
+    while (!p(execute(cmd))) {}
+    execute(cmd, data, num);
   }
 
   /**
@@ -222,9 +291,9 @@ public:
   void readn_if(Channel ch, T *data, uint16_t num, uint32_t splFreq,
     Predicate p)
   {
-    SpiData cmd = createCmd(ch);
-    while (!p(transfer(cmd))) {}
-    transfer(cmd, data, num, getSplDelay(ch, splFreq));
+    auto cmd = createCmd(ch);
+    while (!p(execute(cmd))) {}
+    execute(cmd, data, num, getSplDelay(ch, splFreq));
   }
 
   /**
@@ -300,11 +369,10 @@ private:
   };
 
   /**
-   * Creates command data from the supplied channel.
-   * @param [in] ch the channel to create the command for.
-   * @return the SPI data.
+   * SPI command for a specific channel type.
    */
-  static SpiData createCmd(Channel ch);
+  template <typename>
+  using Command = SpiData;
 
   /**
    * Returns the required delay for the requested sample rate.
@@ -314,34 +382,65 @@ private:
   uint16_t getSplDelay(Channel ch, uint32_t splFreq);
 
   /**
-   * Transfers the supplied SPI data command.
-   * @param [in] cmd the SPI data command to transfer.
-   * @return the ADC value from the SPI response.
+   * Creates a command from the supplied channel.
+   * @param [in] ch the channel to create the command for.
+   * @return the SPI data.
    */
-  uint16_t transfer(SpiData cmd) const;
+  static Command<Channel> createCmd(Channel ch);
 
   /**
-   * Transfers the supplied SPI data command for the requested
-   * number of samples.
-   * @param [in] cmd the SPI data command to transfer.
+   * Executes the supplied command.
+   * @param [in] cmd the command to execute.
+   * @return the ADC value from the SPI response.
+   */
+  uint16_t execute(Command<Channel> cmd) const;
+
+  /**
+   * Executes the supplied command for the requested number
+   * of samples.
+   * @param [in] cmd the command to execute.
    * @param [out] data array to store the values.
    * @param [in] num number of reads. The data array needs to be
    * at least that size.
    */
   template <typename T>
-  void transfer(SpiData cmd, T *data, uint16_t num) const;
+  void execute(Command<Channel> cmd, T *data, uint16_t num) const
+  {
+    for (decltype(num) i=0; i < num; i++)
+      data[i] = static_cast<T>(execute(cmd));
+  }
 
   /**
-   * Transfers the supplied SPI data command for the requested
+   * Executes the supplied command for the requested
    * number of samples with delay between reads.
-   * @param [in] cmd the SPI data command to transfer.
+   * @param [in] cmd the command to execute.
    * @param [out] data array to store the values.
    * @param [in] num number of reads. The data array needs to be
    * at least that size.
    * @param [in] delay in us.
    */
   template <typename T>
-  void transfer(SpiData cmd, T *data, uint16_t num, uint16_t delay) const;
+  void execute(Command<Channel> cmd, T *data, uint16_t num,
+    uint16_t delay) const
+  {
+    for (decltype(num) i=0; i < num; i++) {
+      data[i] = static_cast<T>(execute(cmd));
+      delayMicroseconds(delay);
+    }
+  }
+
+  /**
+   * Transfers without SPI command data.
+   * @return the ADC value from the SPI response.
+   */
+  uint16_t transfer() const;
+
+  /**
+   * Transfers the supplied SPI command data.
+   * @param [in] cmd the SPI command data to transfer.
+   * @return the ADC value from the SPI response.
+   */
+  uint16_t transfer(SpiData cmd) const;
 
 private:
 
@@ -351,4 +450,7 @@ private:
   SPIClass *mSpi;
 };
 
-#endif // MCP3208_H_
+using MCP3201 = MCP320x<MCP320xTypes::MCP3201::Channel>;
+using MCP3202 = MCP320x<MCP320xTypes::MCP3202::Channel>;
+using MCP3204 = MCP320x<MCP320xTypes::MCP3204::Channel>;
+using MCP3208 = MCP320x<MCP320xTypes::MCP3208::Channel>;

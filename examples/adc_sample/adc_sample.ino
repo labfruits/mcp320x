@@ -6,7 +6,7 @@
  */
 
 #include <SPI.h>
-#include <Mcp3208.h>
+#include <Mcp320x.h>
 
 #define SPI_CS    	2 		   // SPI slave select
 #define ADC_VREF    3300     // 3.3V Vref
@@ -41,7 +41,7 @@ void loop() {
   Serial.println("Reading...");
 
   t1 = micros();
-  uint16_t raw = adc.read(MCP3208::SINGLE_0);
+  uint16_t raw = adc.read(MCP3208::Channel::SINGLE_0);
   t2 = micros();
 
   // get analog value

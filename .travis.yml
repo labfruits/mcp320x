@@ -11,6 +11,7 @@ install:
   - platformio update
 
 # atmelavr
+# atmelmegaavr
 # atmelsam
 # espressif32
 # espressif8266
@@ -22,6 +23,7 @@ install:
 script:
   - platformio ci --lib="."
     --board=micro
+    --board=nano_every
     --board=uno
     --board=due
     --board=tian

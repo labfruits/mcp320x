@@ -25,6 +25,7 @@
   "platforms":
   [
     "atmelavr",
+    "atmelmegaavr",
     "atmelsam",
     "espressif32",
     "espressif8266",
